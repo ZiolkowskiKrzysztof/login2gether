@@ -1,4 +1,4 @@
-package cleverbase.login2gether.route
+package cleverbase.login2gether.domain
 
 import java.util.UUID
 
