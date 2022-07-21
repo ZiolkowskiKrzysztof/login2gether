@@ -2,6 +2,7 @@ package cleverbase.login2gether
 
 import cats.effect.IO
 import cats.implicits._
+import cleverbase.login2gether.utils.UserDB
 import com.comcast.ip4s._
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
@@ -13,6 +14,7 @@ object Server {
   def run: IO[Nothing] = {
     for {
       client <- EmberClientBuilder.default[IO].build
+      userDB = new UserDB
 
       // Combine Service Routes into an HttpApp.
       // Can also be done via a Router if you

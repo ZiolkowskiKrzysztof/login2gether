@@ -2,10 +2,12 @@ package cleverbase.login2gether.domain
 
 import java.util.UUID
 
-case class User(uuid: UUID,
+case class User(uuid: UUID = UUID.randomUUID(),
                 username: String,
                 password: String,
-                isActive: Boolean,
-                isSuperMate: Boolean,
-                mates: List[User],
-                secrets: List[Secret])
+                isActive: Boolean = false,
+                isSuperMate: Boolean = false,
+                mates: List[User] = List.empty,
+                secrets: List[Secret] = List.empty,
+                askedForPermission: List[User] = List.empty,
+                isAllowedToLogin: Boolean = false)
