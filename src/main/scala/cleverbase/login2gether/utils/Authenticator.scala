@@ -2,29 +2,29 @@ package cleverbase.login2gether.utils
 
 import cats.effect.IO
 import cleverbase.login2gether.domain.User
+import org.http4s.Status
 
 import scala.concurrent.duration._
 
 class Authenticator(userDB: UserDB) {
 
-  def login(username: String, password: String) =
-    identify(username, password).map {
-      case None => "login failed, wrong username or password"
+  def login(username: String, password: String): IO[Status] =
+    identify(username, password).flatMap {
+      case Some(user) if user.isSuperMate =>
+        changeActiveStatus(user)
+        IO.pure(Status.Ok)
       case Some(user) =>
-        if (user.isSuperMate) {
-          changeActiveStatus(user)
-          "admin logged in"
-        } else {
-          for {
-            _             <- askForPermission(user)
-            _             <- IO.sleep(60.seconds)
-            hasPermission <- checkPermission(user)
-          } yield
-            if (hasPermission) {
-              changeActiveStatus(user)
-              "user logged in"
-            } else "user didn't get permission"
-        }
+        for {
+          _             <- askForPermission(user)
+          _             <- IO.sleep(60.seconds)
+          hasPermission <- checkPermission(user)
+        } yield
+          if (hasPermission) {
+            changeActiveStatus(user)
+            Status.Ok
+          } else Status.Forbidden
+
+      case _ => IO.pure(Status.BadRequest)
     }
 
   private def identify(username: String, password: String): IO[Option[User]] =

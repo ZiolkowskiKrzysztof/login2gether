@@ -1,6 +1,8 @@
 package cleverbase.login2gether
 
 import cats.effect.IO
+import cleverbase.login2gether.domain.Login
+import cleverbase.login2gether.utils.Authenticator
 import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 
@@ -15,12 +17,14 @@ object Routes {
     }
   }
 
-  def loginRoutes(): HttpRoutes[IO] =
+  def loginRoutes(authenticator: Authenticator): HttpRoutes[IO] =
     HttpRoutes.of[IO] {
       // todo: authentication
-      case login @ POST -> Root / "login" =>
+      case req @ POST -> Root / "login" =>
         for {
-          resp <- Ok("works")
+          login <- req.as[Login]
+          auth  <- authenticator.login(login)
+          resp  <- Ok("works")
         } yield resp
     }
 
