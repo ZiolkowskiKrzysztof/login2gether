@@ -1,10 +1,12 @@
 package cleverbase.login2gether.utils
 
-import cleverbase.login2gether.domain.Login
-import io.circe.{Decoder, Encoder}
-import io.circe._, io.circe.generic.semiauto._
+import cats.effect.IO
+import cleverbase.login2gether.domain.{Login, Permission, User}
+import io.circe.generic.auto._
+import org.http4s.circe.{jsonEncoderOf, jsonOf}
 
 object Parsers {
-  implicit val fooDecoder: Decoder[Login] = deriveDecoder[Login]
-  implicit val fooEncoder: Encoder[Login] = deriveEncoder[Login]
+  implicit val loginDecoder      = jsonOf[IO, Login]
+  implicit val permissionDecoder = jsonOf[IO, Permission]
+  implicit val userEncoder       = jsonEncoderOf[IO, User]
 }

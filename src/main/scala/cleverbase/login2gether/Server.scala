@@ -2,7 +2,7 @@ package cleverbase.login2gether
 
 import cats.effect.IO
 import cats.implicits._
-import cleverbase.login2gether.utils.UserDB
+import cleverbase.login2gether.utils.{Authenticator, UserDB}
 import com.comcast.ip4s._
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
@@ -14,14 +14,15 @@ object Server {
   def run: IO[Nothing] = {
     for {
       client <- EmberClientBuilder.default[IO].build
-      userDB = new UserDB
+      userDB        = new UserDB
+      authenticator = new Authenticator(userDB)
 
       // Combine Service Routes into an HttpApp.
       // Can also be done via a Router if you
       // want to extract a segments not checked
       // in the underlying routes.
       httpApp = (
-        Routes.healthCheckRoute
+        Routes.healthCheckRoute <+> Routes.loginRoutes(authenticator) <+> Routes.userRoutes(userDB)
       ).orNotFound
 
       // With Middlewares in place

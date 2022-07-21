@@ -7,7 +7,7 @@ case class User(uuid: UUID = UUID.randomUUID(),
                 password: String,
                 isActive: Boolean = false,
                 isSuperMate: Boolean = false,
-                mates: List[User] = List.empty,
+                mates: List[UUID] = List.empty,
                 secrets: List[Secret] = List.empty,
                 askedForPermission: List[User] = List.empty,
                 isAllowedToLogin: Boolean = false)

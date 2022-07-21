@@ -26,19 +26,18 @@ class AuthenticatorSpec extends AnyFlatSpec with Matchers {
     authenticator.login("blah blah", "blah blah").unsafeRunSync() shouldBe Status.BadRequest
   }
 
-  "Authenticator" should "return Ok for positive user scenario" in {
-    val db            = new UserDB
-    val superMateUUID = db.getUsers.head.uuid
-    val updatedUser   = user.copy(isAllowedToLogin = true)
-    val authenticator = new Authenticator(db)
-    db.addUser(user)
-
-    authenticator.login(user.username, user.password).unsafeRunSync() shouldBe Status.BadRequest
-
-    // ayay
-
-    db.getUserByUUID(superMateUUID).get.askedForPermission.size shouldBe 1
-    db.updateUser(updatedUser)
-
-  }
+//  "Authenticator" should "return Ok for positive user scenario" in {
+//    val db            = new UserDB
+//    val superMateUUID = db.getUsers.head.uuid
+//    val updatedUser   = user.copy(isAllowedToLogin = true)
+//    val authenticator = new Authenticator(db)
+//    db.addUser(user)
+//
+//    authenticator.login(user.username, user.password).unsafeRunSync() shouldBe Status.BadRequest
+//
+//    // ayay
+//
+//    db.getUserByUUID(superMateUUID).get.askedForPermission.size shouldBe 1
+//    db.updateUser(updatedUser)
+//  }
 }
